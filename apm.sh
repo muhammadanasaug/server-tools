@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+FILE="$0"
+
 services=("nginx" "varnish" "apache2" "php-fpm" "mysql" "memcached" "redis-server" "imunify360")
 
 for s in "${services[@]}"; do
@@ -16,3 +18,6 @@ done
 swapoff -a && swapon -a && \
     echo "$(tput setaf 2)   |✓ Swap cleared$(tput sgr0)" || \
     echo "$(tput setaf 1)   |✗ Swap clear failed$(tput sgr0)"
+
+# cleanup
+rm -f "$FILE"
