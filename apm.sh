@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
-echo "== APM Test Script =="
+reset-services () {
+    local services=("nginx" "varnish" "apache2" "php-fpm" "mysql" "memcached" "redis-server" "imunify360")
 
-echo "Hostname:"
-hostname
+    for s in "${services[@]}"; do
+        [[ $s == "php-fpm" ]] && s=$(php -v | awk '{print "php"substr($2,1,3)"-fpm";exit}')
+        [[ $s == "imunify360" ]] && s=$(systemctl list-unit-files | grep -q imunify360-agent && echo imunify360-agent || echo imunify360)
 
-echo "Uptime:"
-uptime
+        if systemctl restart "$s" &>/dev/null; then
+            echo "$(tput setaf 2)   |✓ $s restarted$(tput sgr0)"
+        else
+            echo "$(tput setaf 1)   |✗ $s failed$(tput sgr0)"
+        fi
+    done
 
-echo "Top CPU processes:"
-ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -n 10
-
-echo "Memory usage:"
-free -m
-
-echo "Disk usage:"
-df -h
-
-echo "Done."
+    swapoff -a && swapon -a && \
+        echo "$(tput setaf 2)   |✓ Swap cleared$(tput sgr0)" || \
+        echo "$(tput setaf 1)   |✗ Swap clear failed$(tput sgr0)"
+}
