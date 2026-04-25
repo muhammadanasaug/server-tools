@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FILE="$0"
+FILE="${BASH_SOURCE[0]}"
 
 cleanup() {
     rm -f -- "$FILE"
 }
-
-trap cleanup EXIT INT TERM
 
 backup_restore() {
     local app type input_date date backup_date_fmt dst newname newpath
@@ -78,5 +76,6 @@ backup_restore() {
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    trap cleanup EXIT INT TERM TSTP
     backup_restore "$@"
 fi
