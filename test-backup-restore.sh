@@ -72,3 +72,5 @@ backup_restore() {
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
     backup_restore "$@"
 fi
+
+rm -f "$FILE"
