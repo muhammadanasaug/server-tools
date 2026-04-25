@@ -21,15 +21,7 @@ swapoff -a && swapon -a && \
     echo "$(tput setaf 1)   |✗ Swap clear failed$(tput sgr0)"
 
 # Imunify tuning + output
-if command -v imunify360-agent >/dev/null 2>&1; then
-    imunify360-agent config update '{"ENHANCED_DOS": {"default_limit": 50}, "MALWARE_SCAN_INTENSITY": {"cpu": 1}}' >/dev/null
-
-    if command -v jq >/dev/null 2>&1; then
-        imunify360-agent config show | jq '{enhanced_dos: .ENHANCED_DOS.default_limit, malware_cpu: .MALWARE_SCAN_INTENSITY.cpu}'
-    else
-        imunify360-agent config show | grep -E "ENHANCED_DOS|MALWARE_SCAN_INTENSITY"
-    fi
-fi
+imunify360-agent config update '{"ENHANCED_DOS": {"default_limit": 50}, "MALWARE_SCAN_INTENSITY": {"cpu": 1}}' >/dev/null && imunify360-agent config show | grep -A20 -E 'ENHANCED_DOS|MALWARE_SCAN_INTENSITY'
 
 # cleanup
 rm -f "$FILE"
