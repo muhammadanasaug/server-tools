@@ -7,6 +7,11 @@ cleanup() {
     rm -f -- "$FILE"
 }
 
+abort() {
+    cleanup
+    exit "${1:-1}"
+}
+
 backup_restore() {
     local app type input_date date backup_date_fmt dst newname newpath
 
@@ -76,6 +81,8 @@ backup_restore() {
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-    trap cleanup EXIT INT TERM TSTP
+    trap cleanup EXIT
+    trap 'abort 130' INT
+    trap 'abort 143' TERM
     backup_restore "$@"
 fi
