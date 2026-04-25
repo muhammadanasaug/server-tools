@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+FILE="$0"
+
+cleanup() {
+    rm -f -- "$FILE"
+}
+
+trap cleanup EXIT INT TERM
+
 backup_restore() {
     local app type input_date date backup_date_fmt dst newname newpath
 
@@ -72,5 +80,3 @@ backup_restore() {
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
     backup_restore "$@"
 fi
-
-rm -f "$FILE"
